@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <KafkaAppender name="Kafka">
+            <KafkaConfig
+                    bootstrapServers="localhost:29092"
+                    topic="logs">
+
+                <TopicMappings>
+                    <Mapping level="ERROR" topic="prod-error-logs"/>
+                    <Mapping level="WARN" topic="prod-warn-logs"/>
+                    <Mapping level="INFO" topic="prod-info-logs"/>
+                </TopicMappings>
+
+                <ProducerProperties>
+                    <Property name="acks" value="1"/>
+                    <Property name="retries" value="3"/>
+                    <Property name="batch.size" value="16384"/>
+                    <Property name="linger.ms" value="1"/>
+                </ProducerProperties>
+            </KafkaConfig>
+
+            <PatternLayout pattern="%d{ISO8601} [%t] %-5level %c{1} - %m%n"/>
+        </KafkaAppender>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{ISO8601} [%t] %-5level %c{1} - %m%n"/>
+        </Console>
+
+        <Async name="AsyncKafka">
+            <AppenderRef ref="Kafka"/>
+        </Async>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="ru.em.demo" level="debug" additivity="false">
+            <AppenderRef ref="AsyncKafka"/>
+        </Logger>
+
+        <Logger name="KafkaAppenderInternal" level="info" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>
