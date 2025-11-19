@@ -1,4 +1,3 @@
-```markdown
 # Kafka Log Appender Demo
 
 Проект демонстрирует интеграцию Spring Boot приложения с кастомной библиотекой KafkaAppender
